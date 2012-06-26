@@ -1,0 +1,54 @@
+#!/usr/bin/env ruby
+
+require 'chagol'
+require 'optparse'
+
+# Load the user settings 
+# Initialize the same if they don't exist
+# Create a .chagol directory in the users home directory
+# Initialize an empty configuration and a users sqlite db
+# TODO all of the above
+
+# Parse the command line options with the awesome optionparser
+options = Hash.new
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: chagol --to name|phoneno --message 'Your Message'"
+  opts.on("-h", "--help") { puts opts; exit }
+  opts.on("-v", "--version") do
+    puts "Chagol is currently at version #{Chagol::VERSION}"
+    exit
+  end
+  # The list of usernames can be separated by commas
+  opts.on("-t user1,user2,userN", "--to", Array) do |users|
+    options[:users] = users
+  end
+  opts.on("-m msg", "--message", String) do |msg|
+    options[:message] = msg 
+  end
+  # Like users, there can be one or more lists specified
+  opts.on("-l l1,l2,lN", "--list", Array) do |lists| 
+    options[:lists] = lists 
+  end
+end.parse!
+
+# Now we respond to the parameters passed to us
+# A message is necessary for all actions except quering 
+# for the version of the gem
+if options[:message] && (options[:users] || options[:lists])
+  # Send messages to individual users
+  if options[:users] && options[:users].length > 0
+    #TODO : Replace these stubs with the actual code to send messages
+    puts "Your Message will be sent to the following users"
+    options[:users].each { |user| puts user }
+  end
+  # Send messages to user created lists
+  if options[:lists] && options[:lists].length > 0
+    puts "Your Message will be sent to the following lists"
+    options[:lists].each { |list| puts list }
+  end
+else
+  puts "The great chagol isn't a mind reader!
+Please specify a recipient or a list of recipients 
+to whom you want the message delivered."
+end
