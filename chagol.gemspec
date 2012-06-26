@@ -4,9 +4,9 @@ require File.expand_path('../lib/chagol/version', __FILE__)
 Gem::Specification.new do |gem|
   gem.authors       = ["Nikhil Bhardwaj"]
   gem.email         = ["root@NikhilBhardwaj.in"]
-  gem.description   = %q{TODO: Write a gem description}
-  gem.summary       = %q{TODO: Write a gem summary}
-  gem.homepage      = ""
+  gem.description   = %q{Chagol can send messages to any Indian mobile no}
+  gem.summary       = %q{It can be used as a standalone command line tool or with other ruby libraries.}
+  gem.homepage      = "https://github.com/nikhilbhardwaj/chagol"
 
   gem.files         = `git ls-files`.split($\)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
