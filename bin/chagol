@@ -3,11 +3,14 @@
 require 'chagol'
 require 'optparse'
 
-# Load the user settings 
-# Initialize the same if they don't exist
 # Create a .chagol directory in the users home directory
-# Initialize an empty configuration and a users sqlite db
-# TODO all of the above
+# Initialize an empty configuration and contacts in json format
+if !Dir.exists?(Dir.home + "/.chagol")
+  Chagol.install_chagol
+  puts "Please enter your contacts in ~/.chagol/contacts.json\n
+  Modify the one that already exists and add as many more as \n
+  you want in the same format"
+end
 
 # Parse the command line options with the awesome optionparser
 options = Hash.new
@@ -36,14 +39,30 @@ end.parse!
 # A message is necessary for all actions except quering 
 # for the version of the gem
 if options[:message] && (options[:users] || options[:lists])
+  # Load the contacts in from the json also TODO load lists too
+  contacts = Array.new
+  File.open(File.expand_path("~/.chagol/contacts.json","r")).each_line do |line|
+    contacts << JSON.parse(line)
+  end
+  # Load the username, password and provider from the config file
+  require File.expand_path("~/.chagol/config")
+  messenger = Chagol::SmsSender.new($user[:phone_no], $user[:password], $user[:provider])
   # Send messages to individual users
   if options[:users] && options[:users].length > 0
     #TODO : Replace these stubs with the actual code to send messages
     puts "Your Message will be sent to the following users"
-    options[:users].each { |user| puts user }
+    options[:users].each do |target|
+      contacts.each do |contact|
+        if target.casecmp(contact.name) == 0
+          puts "#{target}, #{contact.phone} => #{options[:message]}"
+          messenger.send(contact.phone,options[:message])
+        end
+      end
+    end 
   end
   # Send messages to user created lists
   if options[:lists] && options[:lists].length > 0
+    # TODO: implement lists
     puts "Your Message will be sent to the following lists"
     options[:lists].each { |list| puts list }
   end
