@@ -1,4 +1,6 @@
 require "chagol/version"
+require "chagol/cli"
+require "chagol/contact"
 require "net/http"
 
 module Chagol
