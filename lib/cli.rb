@@ -3,7 +3,7 @@
 # initializing the json files that store the contents
 
 module Chagol
-  def install_chagol
+  def self.install_chagol
     chagol_path = Dir.home + ".chagol"
     Dir.mkdir(chagol_path)
     # Create the sample json files for the contacts
