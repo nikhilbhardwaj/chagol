@@ -9,7 +9,16 @@ if !Dir.exists?(Dir.home + "/.chagol")
   Chagol.install_chagol
   puts "Please enter your contacts in ~/.chagol/contacts.json\n
   Modify the one that already exists and add as many more as \n
-  you want in the same format"
+  you want in the same format.\n
+  Before using chagol you need to edit your configuration file ~/.chagol/config.rb"
+  exit
+end
+
+require File.expand_path("~/.chagol/config")
+# Check if the user has configured chagol exit if not done
+if $user[:phone_no] == "" || $user[:password] == ""
+  puts "Please enter your phone no and your password in ~/.chagol/config.rb"
+  exit
 end
 
 # Parse the command line options with the awesome optionparser
@@ -39,26 +48,20 @@ end.parse!
 # A message is necessary for all actions except quering 
 # for the version of the gem
 if options[:message] && (options[:users] || options[:lists])
-  # Load the contacts in from the json also TODO load lists too
+  # Load the contacts in from the json
   contacts = Array.new
   File.open(File.expand_path("~/.chagol/contacts.json","r")).each_line do |line|
     contacts << JSON.parse(line)
   end
-  # Load the username, password and provider from the config file
-  require File.expand_path("~/.chagol/config")
+  # Instantiate the messenger with the users configuration
   messenger = Chagol::SmsSender.new($user[:phone_no], $user[:password], $user[:provider])
   # Send messages to individual users
   if options[:users] && options[:users].length > 0
-    #TODO : Replace these stubs with the actual code to send messages
-    puts "Your Message will be sent to the following users"
-    options[:users].each do |target|
-      contacts.each do |contact|
-        if target.casecmp(contact.name) == 0
-          puts "#{target}, #{contact.phone} => #{options[:message]}"
-          messenger.send(contact.phone,options[:message])
-        end
-      end
-    end 
+    phone_nos = Chagol.get_phone_nos_from_name(contacts, options[:users])
+    phone_nos.each do |no|
+      messenger.send(no,options[:message])
+      puts no
+    end
   end
   # Send messages to user created lists
   if options[:lists] && options[:lists].length > 0
@@ -69,5 +72,6 @@ if options[:message] && (options[:users] || options[:lists])
 else
   puts "The great chagol isn't a mind reader!
 Please specify a recipient or a list of recipients 
-to whom you want the message delivered."
+to whom you want the message delivered.
+Run chagol -h to learn what it can do."
 end
