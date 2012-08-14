@@ -56,7 +56,7 @@ or ask me if you don't write ruby :)
 
 ### Usage in another ruby project or a rails app
     require 'chagol'
-    texter = Chagol::SmsSender("9876543210","password","way2sms")
+    texter = Chagol::SmsSender.new("9876543210","password","way2sms")
     texter.send("9968154700", "Chagol Rocks")
 Make appropriate changes to your phone no, password and provider.
 ## Contributing
