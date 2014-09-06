@@ -1,5 +1,11 @@
 # Chagol
 
+This was a project that I worked on whilst in college.
+The api it uses has been withdrawn by the author and it doesn't work anymore.
+I don't really use way2sms these days and don't actively work on maintaining this.
+This only exists so that one day I can look back at how I wrote code in college
+and because I don't have the heart to delete this. It served me well when I needed it.
+
 Chagol is a ruby gem that you can use to send text messages to any
 mobile phone in India using a service provider like way2sms or 160by2.
 It can be used from the command line as well as from other ruby scripts
